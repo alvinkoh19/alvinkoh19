@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>玄机 · 多维度命理占卜</title>
+  <meta name="description" content="融合塔罗牌、西方占星、生命数字学与八字四柱的多维度人格洞察占卜" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="starfield" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-mark">✦</span>
+      <h1>玄机</h1>
+      <span class="brand-sub">多维度命理占卜</span>
+    </div>
+    <p class="tagline">塔罗 · 占星 · 生命数字 · 八字四柱 — 四重视角，照见人格全貌</p>
+  </header>
+
+  <main class="layout">
+    <!-- 输入区 -->
+    <section class="panel input-panel" aria-label="占卜信息输入">
+      <h2 class="panel-title"><span class="rune">☉</span> 启卦信息</h2>
+      <form id="divine-form" autocomplete="off">
+        <div class="field">
+          <label for="name">姓名 <span class="hint">（可选，用于生命数字与称谓）</span></label>
+          <input type="text" id="name" name="name" placeholder="例如：林微 / Lin Wei" />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="birthdate">出生日期 <span class="hint">（公历）</span></label>
+            <input type="date" id="birthdate" name="birthdate" required
+                   min="1900-01-01" max="2099-12-31" value="1995-06-15" />
+          </div>
+          <div class="field">
+            <label for="birthtime">出生时辰 <span class="hint">（可选）</span></label>
+            <select id="birthtime" name="birthtime">
+              <option value="">未知</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="gender">性别 <span class="hint">（八字参考）</span></label>
+            <select id="gender" name="gender">
+              <option value="unknown">不愿透露</option>
+              <option value="female">女</option>
+              <option value="male">男</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="focus">关注领域</label>
+            <select id="focus" name="focus">
+              <option value="general">综合人格</option>
+              <option value="love">感情</option>
+              <option value="career">事业</option>
+              <option value="wealth">财富</option>
+              <option value="growth">成长</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="question">想问的问题 <span class="hint">（默契凝神，写下心中所惑）</span></label>
+          <textarea id="question" name="question" rows="2"
+                    placeholder="例如：我接下来半年的事业重心应放在何处？"></textarea>
+        </div>
+
+        <button type="submit" class="cast-btn">
+          <span class="cast-icon">✶</span> 凝神 · 起卦
+        </button>
+      </form>
+    </section>
+
+    <!-- 结果区 -->
+    <section id="result" class="result hidden" aria-live="polite">
+      <div class="result-head">
+        <h2 id="result-greeting" class="result-greeting"></h2>
+        <p id="result-meta" class="result-meta"></p>
+      </div>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="tarot" role="tab">🃏 塔罗牌</button>
+        <button class="tab" data-tab="numerology" role="tab">🔢 生命数字</button>
+        <button class="tab" data-tab="astrology" role="tab">🌌 星盘</button>
+        <button class="tab" data-tab="bazi" role="tab">🀄 八字四柱</button>
+        <button class="tab" data-tab="synthesis" role="tab">✺ 综合洞察</button>
+      </nav>
+
+      <div class="tab-panels">
+        <div class="tab-panel active" data-panel="tarot"></div>
+        <div class="tab-panel" data-panel="numerology"></div>
+        <div class="tab-panel" data-panel="astrology"></div>
+        <div class="tab-panel" data-panel="bazi"></div>
+        <div class="tab-panel" data-panel="synthesis"></div>
+      </div>
+
+      <div class="result-actions">
+        <button id="reshuffle" class="ghost-btn">↻ 重新洗牌</button>
+        <button id="restart" class="ghost-btn">✎ 重新起卦</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>本占卜融合塔罗象征、西方占星、生命数字学与八字四柱，仅供自我观照与娱乐参考，不构成任何专业建议。</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
