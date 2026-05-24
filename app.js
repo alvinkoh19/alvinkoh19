@@ -532,28 +532,60 @@ function initStarfield() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  initBirthtimeSelect();
-  initStarfield();
-
-  $("#divine-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    shuffleSalt = 0;
+// 包一层：任何计算/渲染错误都显示在页面上，而不是静默失败
+function safeRun() {
+  try {
     runDivination();
-  });
+  } catch (err) {
+    console.error("起卦出错：", err);
+    const r = $("#result");
+    if (r) {
+      r.classList.remove("hidden");
+      const g = $("#result-greeting");
+      if (g) g.textContent = "起卦时出错了";
+      const m = $("#result-meta");
+      if (m) m.textContent = "错误信息：" + String((err && err.message) || err) + "（请把这行字告诉开发者）";
+      r.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      alert("起卦出错：" + String((err && err.message) || err));
+    }
+  }
+}
+
+function boot() {
+  // 外围初始化各自 try/catch，绝不阻塞核心按钮的绑定
+  try { initBirthtimeSelect(); } catch (e) { console.error("时辰下拉初始化失败：", e); }
+  try { initStarfield(); } catch (e) { console.error("星空初始化失败：", e); }
+
+  const form = document.querySelector("#divine-form");
+  if (form) {
+    form.addEventListener("submit", (e) => { e.preventDefault(); shuffleSalt = 0; safeRun(); });
+  }
+  // 双保险：直接给按钮绑 click（按钮非 submit 时也能触发）
+  const btn = document.querySelector(".cast-btn");
+  if (btn && btn.type !== "submit") {
+    btn.addEventListener("click", (e) => { e.preventDefault(); shuffleSalt = 0; safeRun(); });
+  }
 
   document.querySelectorAll(".tab").forEach((t) =>
     t.addEventListener("click", () => switchTab(t.dataset.tab)));
 
-  $("#reshuffle").addEventListener("click", () => {
-    if (!lastCtx) return;
-    shuffleSalt++;
-    runDivination();
-  });
+  const rsh = document.querySelector("#reshuffle");
+  if (rsh) rsh.addEventListener("click", () => { if (!lastCtx) return; shuffleSalt++; safeRun(); });
 
-  $("#restart").addEventListener("click", () => {
-    $("#result").classList.add("hidden");
+  const rst = document.querySelector("#restart");
+  if (rst) rst.addEventListener("click", () => {
+    const r = document.querySelector("#result");
+    if (r) r.classList.add("hidden");
     window.scrollTo({ top: 0, behavior: "smooth" });
-    $("#name").focus();
+    const nm = document.querySelector("#name");
+    if (nm) nm.focus();
   });
-});
+}
+
+// 脚本可能在 DOMContentLoaded 之后才执行（内联/缓存场景），两种情况都覆盖
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", boot);
+} else {
+  boot();
+}
